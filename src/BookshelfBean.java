@@ -36,6 +36,7 @@ public class BookshelfBean {
         PrintWriter writer = new PrintWriter(stringWriter, true);
 
         for(BookBean book : bookshelf) {
+
             writer.println("");
             writer.println("Title: " + book.getTitle());
             writer.println("Author: " + book.getAuthor());

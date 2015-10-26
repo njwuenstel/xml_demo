@@ -13,7 +13,7 @@ public class JaxbUnmarshallerExample {
        /*
         * *****  JAXB Unmarshal Instructions  *****
         *
-        *
+        * 0. Install the JAXB 2.0 xjc generator plugin if you have not already.
         *
         * 1. Get an xsd for the xml format you wish to unmarshal. if you cannot
         *    find an xsd then find a sample xml and create an xsd from the xml
@@ -28,10 +28,12 @@ public class JaxbUnmarshallerExample {
         * 3. Set the root element for JAXB by adding the @XMLRootElement annotation to the root class
         *
         *   a. Open the java class that corresponds to the root element of your xml.
-        *   b. Add the @XmlRootElement(name = "name_of_root_element_class") annotation next to
-        *      the existing annotations.
+        *   b. Add the @XmlRootElement(name = "name_of_root_element_from_xml") annotation next to
+        *      the existing annotations. For the name property, use the actual element name from
+        *      the xml file, not the name of your java class.
         *
-        *  4. Setup the main method and the unmarshalExampleMethod for your
+        *  4. Setup the main method and the unmarshalExampleMethod for your xml file and root element
+        *     java class and run it.
         */
 
     public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
@@ -57,17 +59,16 @@ public class JaxbUnmarshallerExample {
 
             e.printStackTrace();
         }
-
     }
 
     /**
      * This method will use jaxb to unmarshal an xml file and map it to
      * the class structure created by xjc.
      *
-     * @param problemXML a file object of the xml to be unmapped
+     * @param inputXML a file object of the xml to be unmapped
      * @return the rootElement mapped with information from the xml
      */
-    public RootElementType unmarshalExample(File problemXML) throws JAXBException {
+    public RootElementType unmarshalExample(File inputXML) throws JAXBException {
 
             /*
              * Create a new instance of a JAXBContext object passing in the class to
@@ -86,7 +87,7 @@ public class JaxbUnmarshallerExample {
              * This will return an object containing all the information in your xml, mapped
              * to the individual xjc objects.
              */
-             RootElementType rootElement = (RootElementType) jaxbUnmarshaller.unmarshal(problemXML);
+             RootElementType rootElement = (RootElementType) jaxbUnmarshaller.unmarshal(inputXML);
 
             return rootElement;
     }
