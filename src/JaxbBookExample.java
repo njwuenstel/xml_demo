@@ -1,26 +1,16 @@
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import xjcproblem.RootElementType;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 
 public class JaxbBookExample {
 
     //static Logger log = BookieLogger.xml;
 
-    public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
+    public static void main(String[] args) throws IOException {
 
         /* Instantiate an instance of this class */
         JaxbBookExample jaxbBookDemo = new JaxbBookExample();
@@ -39,72 +29,71 @@ public class JaxbBookExample {
         bookTwo.setGoodReadsId(37);
 
 
-        /* Marshalling Example */
+        /* ***** Marshalling Example ***** */
+
+        /* make a bookshelf and put the books in it */
+        BookshelfBean bookshelf = new BookshelfBean();
+        bookshelf.add(bookOne);
+        bookshelf.add(bookTwo);
+
+        /* Create output file */
+        File outputFile = new File("bookshelf.xml");
+
+        /* Call marshalBookshelf method passing in the bookshelf and output file  */
+        jaxbBookDemo.marshalBookshelf(bookshelf, outputFile);
+
+
+//        /* ***** Unmarshalling Example ***** */
+//
+//        /* Create a file object of your input xml */
+//        File bookshelfXml = new File("bookshelf.xml");
+//
+//        /*
+//         * Call unmarshallExample() passing in the file.
+//         * Set the return object as the type of your root element class (see step 3 above)
+//         */
+//        BookshelfBean myBookshelf = jaxbBookDemo.unmarshalBookshelf(bookshelfXml);
+//
+//        /* It is a good idea to override the toString of your xjc objects */
+//        System.out.println(myBookshelf.toString());
+//
+//        System.out.println("Books on shelf: " + myBookshelf.getBookshelf().size());
+//        System.out.println("Book 1 Author: " + myBookshelf.getBookshelf().get(1).getAuthor());
+
+    }
+
+
+    public void marshalBookshelf(BookshelfBean bookshelf, File outputXML) {
+
         try {
 
-            /* make a bookshelf and put the books in it */
-            BookshelfBean bookshelf = new BookshelfBean();
-            bookshelf.add(bookOne);
-            bookshelf.add(bookTwo);
+            /*
+            * Create a new instance of a JAXBContext object passing in the class to
+            * be bound. Make sure the argument in the method ends with '.class'.
+            */
+            JAXBContext jaxbContext = JAXBContext.newInstance(BookshelfBean.class);
 
-            /* Create output file */
-            File outputFile = new File("bookshelf.xml");
+            /* Instantiate the unmarshaller */
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
-            /* Call marshalBookshelf method passing in the bookshelf and output file  */
-            jaxbBookDemo.marshalBookshelf(bookshelf, outputFile);
+            /*  Set formatting property */
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            jaxbMarshaller.marshal(bookshelf, outputXML);
+            jaxbMarshaller.marshal(bookshelf, System.out);
 
         } catch (JAXBException e) {
+
             e.printStackTrace();
         }
-
-
-//        /* Unmarshalling Example */
-//        try {
-//
-//            /* Create a file object of your input xml */
-//            File bookshelfXml = new File("bookshelf.xml");
-//
-//            /*
-//             * Call unmarshallExample() passing in the file.
-//             * Set the return object as the type of your root element class (see step 3 above)
-//             */
-//            BookshelfBean bookshelf = jaxbBookDemo.unmarshalBookshelf(bookshelfXml);
-//
-//            /* It is a good idea to override the toString of your xjc objects */
-//            System.out.println(bookshelf.toString());
-//
-//            //System.out.println("Books on shelf: " + bookshelf.getBookshelf().size());
-//            //System.out.println("Book 1 Author: " + bookshelf.getBookshelf().get(1).getAuthor());
-//
-//        } catch (JAXBException e) {
-//
-//            e.printStackTrace();
-//        }
     }
 
 
-    public void marshalBookshelf(BookshelfBean bookshelf, File outputXML) throws JAXBException {
+    public BookshelfBean unmarshalBookshelf(File inputXML) {
 
-        /*
-        * Create a new instance of a JAXBContext object passing in the class to
-        * be bound. Make sure the argument in the method ends with '.class'.
-        */
-        JAXBContext jaxbContext = JAXBContext.newInstance(BookshelfBean.class);
+        BookshelfBean bookshelf = null;
 
-        /* Instantiate the unmarshaller */
-        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
-        /*  Set formatting property */
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-        jaxbMarshaller.marshal(bookshelf, outputXML);
-        jaxbMarshaller.marshal(bookshelf, System.out);
-    }
-
-
-    public BookshelfBean unmarshalBookshelf(File inputXML) throws JAXBException {
-
-        BookshelfBean bookshelf;
+        try {
 
         /*
          * Create a new instance of a JAXBContext object passing in the class to
@@ -124,6 +113,11 @@ public class JaxbBookExample {
          * to the individual xjc objects.
          */
         bookshelf = (BookshelfBean) jaxbUnmarshaller.unmarshal(inputXML);
+
+        } catch (JAXBException e) {
+
+            e.printStackTrace();
+        }
 
         return bookshelf;
     }

@@ -41,8 +41,6 @@ public class JaxbUnmarshallerExample {
         /* Instantiate an instance of this class */
         JaxbUnmarshallerExample jaxbDemo = new JaxbUnmarshallerExample();
 
-        try {
-
             /* Create a file object of your input xml */
             File problemXml = new File("problem.xml");
 
@@ -54,11 +52,6 @@ public class JaxbUnmarshallerExample {
 
             /* It is a good idea to override the toString of your xjc objects */
             System.out.println(rootElement.toString());
-
-        } catch (JAXBException e) {
-
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -68,8 +61,11 @@ public class JaxbUnmarshallerExample {
      * @param inputXML a file object of the xml to be unmapped
      * @return the rootElement mapped with information from the xml
      */
-    public RootElementType unmarshalExample(File inputXML) throws JAXBException {
+    public RootElementType unmarshalExample(File inputXML) {
 
+        RootElementType rootElement = null;
+
+        try {
             /*
              * Create a new instance of a JAXBContext object passing in the class to
              * be bound. Make sure the argument in the method ends with '.class'.
@@ -87,9 +83,14 @@ public class JaxbUnmarshallerExample {
              * This will return an object containing all the information in your xml, mapped
              * to the individual xjc objects.
              */
-             RootElementType rootElement = (RootElementType) jaxbUnmarshaller.unmarshal(inputXML);
+             rootElement = (RootElementType) jaxbUnmarshaller.unmarshal(inputXML);
 
-            return rootElement;
+        } catch (JAXBException e) {
+
+            e.printStackTrace();
+        }
+
+        return rootElement;
     }
 
 }
